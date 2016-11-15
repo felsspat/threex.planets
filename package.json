@@ -1,0 +1,28 @@
+{
+  "name": "basic-project",
+  "version": "0.0.12",
+  "description": "",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Robin de Vries",
+  "license": "",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-concurrent": "^2.3.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-less": "^1.4.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-minify-html": "^2.1.0",
+    "grunt-newer": "^1.2.0",
+    "jit-grunt": "^0.10.0",
+    "jquery": "^3.1.1",
+    "less": "~2.7.1",
+    "less-plugin-autoprefix": "^1.5.1",
+    "time-grunt": "^1.4.0"
+  }
+}

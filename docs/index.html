@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<script src='vendor/three.js/build/three.min.js'></script>
+<script src='threex.planets.js'></script>
+<body style='margin: 0px; background-color: #000000; overflow: hidden;'><script>
+    navigator.geolocation.getCurrentPosition(function(position) {
+        var renderer	= new THREE.WebGLRenderer({
+            antialias	: true
+        });
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
+        renderer.shadowMapEnabled	= true;
+
+        var updateFcts	= [];
+        var scene	= new THREE.Scene();
+        var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100 );
+        camera.position.z = 1.5;
+
+        var earthMesh	= THREEx.Planets.createEarth();
+        earthMesh.rotation.x = (90 - position.coords.latitude) * Math.PI / 180;
+        earthMesh.rotation.y = -(90 + position.coords.longitude) * Math.PI / 180;
+        scene.add(earthMesh);
+
+        var lightCenter = new THREE.Object3D();
+        scene.add(lightCenter);
+
+        var light	= new THREE.DirectionalLight( 0xcccccc, 1 );
+        light.position.set(0,0,5);
+
+        updateFcts.push(function(delta, now){
+            var date = new Date();
+            var hour = date.getUTCHours();
+            var minute = date.getUTCMinutes();
+            var time = hour * 60 + minute;
+            lightCenter.rotation.y = - (time / (24*60) * 2 * Math.PI - Math.PI) + position.coords.longitude * Math.PI / 180;
+        });
+
+        lightCenter.add(light );
+
+        var mesh	= THREEx.Planets.createEarthCloud();
+        updateFcts.push(function(delta, now){
+            mesh.rotation.y += 1/64 * delta;
+        });
+
+        scene.add(mesh);
+
+        var mouse	= {x : 0, y : 0};
+        document.addEventListener('mousemove', function(event){
+            mouse.x	= (event.clientX / window.innerWidth ) - 0.5;
+            mouse.y	= (event.clientY / window.innerHeight) - 0.5;
+        }, false);
+
+        updateFcts.push(function(){
+            renderer.render( scene, camera );
+        });
+
+        var lastTimeMsec= null;
+
+        requestAnimationFrame(function animate(nowMsec){
+
+            requestAnimationFrame( animate );
+
+            lastTimeMsec	= lastTimeMsec || nowMsec-1000/60;
+            var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec);
+            lastTimeMsec	= nowMsec;
+
+            updateFcts.forEach(function(updateFn){
+                updateFn(deltaMsec/1000, nowMsec/1000)
+            })
+        })
+    });
+
+</script></body>
+
